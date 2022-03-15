@@ -1,0 +1,770 @@
+<html> 
+<head>
+	<style type="text/css">
+        /*Whole Backround Frame css*/
+		.map {                                         
+			background-image: url("./map.png");
+            width: 1000px;
+            height: 1000px;
+			background-size:     cover;         
+			background-repeat:   no-repeat;
+			background-position: cover;
+            background-size: 100% 100%; 
+            transition: 100ms;
+            box-shadow: 20px 20px 20px #cccccc;
+		}
+		/*Whole Frame background image css*/
+        .img {
+			width: 100%;
+			height: 100%;
+			position: fixed;
+			top: 0px;
+			left: 0px;
+		}
+
+        /*Panel on the right top: Shown part when <- button is pressed css*/
+		.edit {
+			display: inline-block;
+			width: 170px;
+			height: 255px;
+			margin-left:770px;
+			position: fixed;
+            margin-top: 70px;
+            background-color: rgb(191, 191, 191, 0.85);
+            padding: 5px;
+            border-radius: 10px;
+            padding-left: 20px;
+            padding-top: 20px;
+            display: none;
+            transition: 500ms;
+		}
+        /*all labels(static letters) in Shown part when <- button is pressed css*/
+		label {
+			font-size: 20px;
+			color: white;
+            text-shadow: 5px 5px 5px #888888;
+		}
+        /*all input components css*/
+		input {
+			font-size: 15px;
+			padding: 5px;
+			border-radius: 5px;
+			width: 60px;
+			font-weight: bold;
+			padding-left: 10px;
+            margin-left: 10px;
+            border: none;
+            box-shadow: 5px 5px 5px #888888;
+            color: gray;
+            margin-bottom: 3px;
+		}
+        /*all button css*/
+		.btn , .btn1 {
+			font-size: 18px;
+			padding: 8px;
+			background-color: white;
+            border: none;
+			box-shadow: 5px 5px 5px #888888;
+			border-radius: 10px;
+            margin-left: 5px;
+            color: gray;
+		}
+        /*all button hover event (hover = when mouse cursor is over components )*/
+		.btn:hover {
+			transform: scale3d(1.1, 1.1 ,1.1);
+            font-weight: bold;
+		}
+        /*Hide button in Shown part when click select button css*/
+        #toggle {
+            width: 75px;
+            font-size: 16px;
+            box-shadow: 3px 3px 3px #cccccc;
+            font-weight: normal;
+        }
+        /*Panel left top: Shown part when click select button */
+        .listBox {
+            position: fixed;
+            border-radius: 5px;
+            top: 90px;
+            padding: 5px;
+            padding-top: 10px;
+            width: 180px;
+            height: 260px;
+            background-color: #ffffff;
+            margin-left: 20px;
+            display: none;
+            padding-bottom: 10px;
+            box-shadow: 5px 5px 5px #888888;
+            transition: 500ms;
+        }
+        /*child part in Shown part when click select button css*/
+        .viewlist {
+            margin: auto;
+            padding-top: 10px;
+            width: 85%;
+            height: 200px;
+            overflow: auto;
+            border-radius: 5px;
+            box-shadow: 4px 4px 4px #aaaaaa;
+        }
+        /*main list css in child part in shown part when click select button css*/
+        select {
+            width: 152px;
+            height: 200px;
+            box-shadow: 3px 3px 3px #aaaaaa;
+        }
+        /*remove button in top left part css*/
+        #removepos {
+            margin-left: 10px;
+            background-color: rgb(244, 244, 244);
+            font-size: 16px;
+            box-shadow: 3px 3px 3px #cccccc;
+        }
+        /*Select button css*/
+        #Clear {
+            position: fixed;
+            top: 20px;
+            left: 30px;
+            font-size: 16px;
+            font-weight: normal;
+            display: none;
+            text-shadow: 5px 5px 5px #999999;
+        }        
+        /* - button css*/
+        #zoomOut {
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+        /* + button css */
+        #zoomIn {
+            padding-left: 13px;
+            padding-right: 13px;
+        }
+        /*current y position label(static letters) css*/
+        #c_y {
+            margin-left: 13px;
+        }
+        /*goal x position label(static letters) css*/
+        #g_x {
+            margin-left: 30px;
+        }
+        /*goal y position label(static letters) css*/
+        #g_y {
+            margin-left: 33px;
+        }
+        /* <- start button css*/
+        #start {
+            position: fixed;
+            top: 20px;
+            left: 850px;
+            font-size: 16px;
+            padding: 12px;
+            color: gray;
+            text-shadow: 3px 3px 3px #999999;
+            box-shadow: 5px 5px 5px #aaaaaa;
+            border: none;
+            border-radius: 35px;
+            background-color: #fefefe;
+            z-index: 2;
+            width: 50px;
+            color: gray;
+        }
+        /* <- button hover event (hover = when mouse cursor is over component )*/
+        #start:hover {
+            transform: scale3d(1.1, 1.1, 1.1);
+        }
+
+        #ClearAll {
+            margin-top: 10px;
+        }
+	</style>
+</head>
+
+<body onload="init()" id="body">
+<input class="start" id="start" value="<-" type="button"></input>
+<div class="can_div">
+    <canvas id="can" class="map" width="4000" height="4000" style="position:absolute;">Below you can write:</canvas>
+</div>
+<div class="edit" id="edit"> 
+	<label class="c_x_l">Current X:</label><input class="input" id="c_x" /> <br /> 
+	<label class="c_y_l">Current Y:</label><input class="input" id="c_y" /> <br /> <hr /> 
+	<label class="g_x_l">Goal X:</label><input class="input" id="g_x" /> <br />
+	<label class="g_x_l">Goal Y:</label><input class="input" id="g_y" /> <br /> <hr />
+	<button class="btn" id="setPos"> Mark </button>
+    <button class="btn" id="zoomIn"> + </button>
+    <button class="btn" id="zoomOut"> - </button> <br />
+    <button class="btn" id="ClearAll"> ClearAll </button> 
+</div>
+<button class="btn" id="Clear"> Select </button> <br />
+<div class="listBox" id="listBox">
+    <div class="Select">
+        <button class="btn1" id="removepos" disabled>Remove</button>
+        <input class="btn1" type="button" value="Hide" id="toggle" disabled/>
+    </div>
+    <div class="viewlist" id="viewlist">
+        <select multiple id="listParent">
+        </select>
+    </div>
+</div>
+</body>
+</html>
+
+<script type="text/javascript">
+
+var start = document.getElementById("start");
+var startflag = 0;
+var hideflag = 0;
+start.addEventListener("mouseover" , function() {
+    if(startflag == 0) {
+        start.value = "start";
+        start.setAttribute("style","border-radius:10px; width: 80px;");
+    }
+});
+start.addEventListener("mouseout" , function() {
+    if(startflag == 0) {
+        start.value = "<-";
+        start.setAttribute("style","border-radius:35px; width: 50px;");
+    }
+});
+start.addEventListener("mousedown" , function() {
+    if(hideflag == 0) {
+        document.getElementById("edit").setAttribute("style", "display: block;");
+        document.getElementById("Clear").setAttribute("style","display: block;");
+        start.setAttribute("style","border-radius:10px; width: 80px;");
+        start.value = "Hide";
+        hideflag = hideflag + 1;
+        startflag = startflag + 1;
+    }
+    else {
+        document.getElementById("edit").setAttribute("style", "display: none;");
+        document.getElementById("Clear").setAttribute("style","display: none;");
+        document.getElementById("listBox").setAttribute("style", "display: none;");
+        hideflag = hideflag - 1;
+        startflag = startflag - 1;
+    }
+});
+
+var canvas, ctx, flag = false,
+    prevX = 0,
+    currX = 0,
+prevY = 0,
+    currY = 0,
+    dot_flag = false;
+
+var x = "gray",
+    y = 1;
+
+var body = document.getElementById('body');
+
+var square_x = [];
+var square_y = [];
+
+var setPos = document.getElementById("setPos");
+
+var save_x = [];
+var save_y = [];
+var save_flag = 0;
+var clickflag = false;
+
+var toggle = document.getElementById("toggle");
+var clieckedx = 0;
+var clieckedy = 0;
+var temptop = 0,
+    templeft = 0;
+var drawflag = 1;
+
+function init() {
+	square();
+    canvas = document.getElementById('can');
+
+    ctx = canvas.getContext("2d");
+    w = canvas.width;
+    h = canvas.height;
+
+
+    for(var i = 2000-6 ; i > 0 ; i = i - 12)
+    {
+    	ctx.beginPath();
+    	ctx.lineWidth = 1;
+    	ctx.moveTo(i, 0);
+    	ctx.lineTo(i, 4000);
+        ctx.strokeStyle = x;
+        ctx.stroke();
+    }
+
+    for(var i = 2000+6 ; i < 4000 ; i = i + 12)
+    {
+        ctx.beginPath();
+        ctx.lineWidth = 1;
+        ctx.moveTo(i, 0);
+        ctx.lineTo(i, 4000);
+        ctx.strokeStyle = x;
+        ctx.stroke();
+    }
+
+    for(var i = 2000-6 ; i > 0 ; i -= 12)
+    {
+    	ctx.beginPath();
+    	ctx.lineWidth = 1;
+    	ctx.moveTo(0, i);
+    	ctx.lineTo(4000, i)
+        ctx.strokeStyle = x;
+        ctx.lineWidth = y;
+        ctx.stroke();
+    }
+
+    for(var i = 2000+6 ; i < 4000 ; i = i + 12)
+    {
+        ctx.beginPath();
+        ctx.lineWidth = 1;
+        ctx.moveTo(0, i);
+        ctx.lineTo(4000, i)
+        ctx.strokeStyle = x;
+        ctx.lineWidth = y;
+        ctx.stroke();
+    }
+
+    can.addEventListener("mousedown", function (e) {
+        drawflag = 1;
+        console.log(clickflag);
+        // findxy('down', e)
+    }, false);
+    can.addEventListener("mouseup", function (e) {
+        StopFlag();
+       
+
+           if(drawflag == 1) 
+                findxy('down', e);
+        
+        // findxy('down', e)
+    }, false);
+    body.addEventListener("mouseup" , function(e) {
+
+        clickflag = false;
+        var topstring = can.style.top;
+        var leftstring = can.style.left;
+        
+        temptop = Number(topstring.slice(0,topstring.indexOf("px")));
+        templeft = Number(leftstring.slice(0,leftstring.indexOf("px")));
+        // console.log(temptop + "<= temptop : "+ "templeft =>" + templeft);
+    });
+    body.addEventListener("mousedown" , function(e) {
+        clieckedx = e.clientX;
+        clieckedy = e.clientY;
+        clickflag = true;
+        console.log(clickflag);
+    });
+    can.addEventListener("mousemove", function (e) {
+        findxy('move', e)
+    }, false);
+    can.addEventListener("mousemove", function(e) {
+        drawflag = 0;
+        if(clickflag) {
+            var b = [];
+            getCursorPosition(can , e);
+
+            can.style.top = temptop + (e.clientY - clieckedy) / zoom;
+            can.style.left = templeft + (e.clientX - clieckedx) / zoom;
+
+            // console.log("f x:" + clieckedx + "f y:" + clieckedy + "c x:" + e.clientX + "c y:" + e.clientY);
+        }
+    });
+}
+ 
+ function getCursorPosition(canvas, event) {
+    const rect = canvas.getBoundingClientRect();
+    const x = event.clientX - rect.left
+    const y = event.clientY - rect.top
+    var a = [];
+    a[0] = x;
+    a[1] = y;
+    console.log("current x : " + x/zoom + " " + "current y:" + y/zoom );
+  }
+
+function draw() {
+    ctx.beginPath();
+    ctx.strokeStyle = x;
+    ctx.lineWidth = y;
+    ctx.stroke();
+    ctx.closePath();
+}
+   
+function findxy(res, e) {
+    if (res == 'down') {
+        prevX = currX;
+        prevY = currY;
+        currX = e.clientX - canvas.getBoundingClientRect().left;
+        currY = e.clientY - canvas.getBoundingClientRect().top;
+		var index_x = Math.floor((currX) / 3);
+		var index_y = Math.floor((currY) / 3);
+        index_x = Math.floor(index_x / zoom );
+        index_y = Math.floor(index_y / zoom );
+        currX = square_x[index_x];
+        currY = square_y[index_y];
+        save_x[save_flag] = currX;
+        save_y[save_flag] = currY;
+		save_flag = save_flag + 1;
+        flag = true;
+        dot_flag = true;
+        if (dot_flag) {
+            ctx.beginPath();
+            ctx.fillStyle = "red";
+            // ctx.fillRect(currX , currY , 12, 12);
+            ctx.fillRect(currX , currY , 14,  14);
+            ctx.closePath();
+            dot_flag = false;
+            drawList();
+        }
+    }
+    if (res == 'move') {
+        prevX = currX;
+        prevY = currY;
+        currX = e.clientX - canvas.getBoundingClientRect().left;
+        currY = e.clientY - canvas.getBoundingClientRect().top;
+		var index_x = Math.floor((currX) / 3);
+		var index_y = Math.floor((currY) / 3);
+		currX = square_x[index_x] ;
+		currY = square_y[index_y] ; 
+        document.getElementById("c_x").value = Math.floor(index_x/zoom) - 166;
+        if(Math.floor(index_y/zoom) - 166 > 0)
+            document.getElementById("c_y").value = 0 - (Math.floor(index_y/zoom) - 166);
+        else
+            document.getElementById("c_y").value = Math.abs(Math.floor(index_y/zoom) - 166);
+    }
+}
+setPos.addEventListener("click" , function() {
+	var xx = document.getElementById("g_x").value;
+	var yy = document.getElementById("g_y").value;
+    tempy = 0;
+    if(yy > 0)
+        tempy = 0 - yy;
+    else
+        tempy = Math.abs(yy);
+	ctx.beginPath();
+    ctx.fillStyle = "red";
+    xx = Number(xx) + 166;
+    yy = Number(tempy) + 166;
+    save_x[save_flag] = xx;
+    save_x[save_flag] = square_x[xx];
+    save_y[save_flag] = square_y[yy];
+    save_flag = save_flag + 1;
+    ctx.fillRect(square_x[xx], square_y[yy], 14, 14);
+    listParent.innerHTML = "";
+    drawList();
+})
+
+toggle.addEventListener("click" , function() {
+    var tempy = 0;
+	if(toggle.value == "Hide")
+	{
+		toggle.value = "Show";
+		var x_pos;
+        var y_pos;
+        for(var j = 0 ; j < selected.length ; j ++)
+        {
+            x_pos = Number(selected[j].slice(0, selected[j].indexOf(','))) * 12 + 1992;
+            if(Number(selected[j].slice(selected[j].indexOf(',') + 1)) > 0)
+                tempy = 0 - Number(selected[j].slice(selected[j].indexOf(',') + 1));
+            else
+                tempy = Math.abs(Number(selected[j].slice(selected[j].indexOf(',') + 1)));
+
+            y_pos = tempy * 12 + 1992;
+            ctx.clearRect(x_pos, y_pos , 14, 14);
+        }
+
+	}
+	else
+	{
+		toggle.value = "Hide";
+	    var x_pos;
+        var y_pos;
+        for(var j = 0 ; j < selected.length ; j ++)
+        {
+            ctx.fillStyle = "red";
+            x_pos = Number(selected[j].slice(0, selected[j].indexOf(','))) * 12 + 1992;
+            if(Number(selected[j].slice(selected[j].indexOf(',') + 1)) > 0)
+                tempy = 0 - Number(selected[j].slice(selected[j].indexOf(',') + 1));
+            else
+                tempy = Math.abs(Number(selected[j].slice(selected[j].indexOf(',') + 1)));
+            y_pos = tempy * 12 + 1992;
+            ctx.fillRect(x_pos, y_pos , 14, 14);
+        }
+	}
+})
+
+
+function square() {
+    var j = 0;
+    for(var i = 0 ; i <= 4000 ; i++)
+    {
+    	if(i % 12 == 0) {
+    		square_x[j] = i;
+    		j++;
+    	}
+    }
+    j = 0;
+    for(var i = 0 ; i <= 4000 ; i++)
+    {
+    	if(i % 12 == 0) {
+    		square_y[j] = i;
+    		j++;
+    	}
+    }
+}
+
+// third update
+var listBox = document.getElementById("listBox");
+var listParent = document.getElementById("listParent");
+var Selectflag = true;
+var removebtn = document.getElementById("removepos");
+var selected = [];
+
+listParent.addEventListener("click", function() {
+
+
+    for(var i = 0 ; i < save_flag ; i ++)
+    {
+        ctx.fillStyle = "red";
+        ctx.fillRect(save_x[i], save_y[i], 14, 14);
+    }
+    toggle.disabled = false;
+    toggle.setAttribute("style", "font-weight: bold;");
+    removebtn.disabled = false;
+    removebtn.setAttribute("style", "font-weight: bold;");
+    selected = [...listParent.options]
+                    .filter(option => option.selected)
+                    .map(option => option.value);
+    var tempy = 0;
+    for(var j = 0 ; j < selected.length ; j ++)
+    {
+        ctx.beginPath();
+        ctx.fillStyle = "yellow";
+        var x_pos = Number(selected[j].slice(0, selected[j].indexOf(','))) * 12 + 1992;
+        console.log();
+        if(Number(selected[j].slice(selected[j].indexOf(',') + 1)) > 0)
+            tempy = 0 - Number(selected[j].slice(selected[j].indexOf(',') + 1));
+        else
+            tempy = Math.abs(Number(selected[j].slice(selected[j].indexOf(',') + 1)));
+        console.log(tempy);
+        var y_pos = tempy * 12 + 1992;
+        ctx.fillRect(x_pos , y_pos , 14 , 14);
+        // ctx.fillRect()
+    }
+})
+    removepos.addEventListener("click" , function() {
+        toggle.disabled = true;
+        toggle.setAttribute("style", "font-weight: normal;");
+        var x_pos;
+        var y_pos;
+        var tempy = 0;
+        for(var j = 0 ; j < selected.length ; j ++)
+        {
+            x_pos = Number(selected[j].slice(0, selected[j].indexOf(','))) * 12 + 1992;
+            if(Number(selected[j].slice(selected[j].indexOf(',') + 1)) > 0)
+                tempy = 0 - Number(selected[j].slice(selected[j].indexOf(',') + 1));
+            else
+                tempy = Math.abs(Number(selected[j].slice(selected[j].indexOf(',') + 1)));
+            y_pos = tempy * 12 + 1992;
+            ctx.clearRect(x_pos, y_pos , 14, 14);
+        }
+        var temp_flag = save_flag;
+
+        for( var i = 0; i < save_flag ; i++){ 
+            for( var j = 0 ; j < selected.length ; j++)
+            {
+                x_pos = Number(selected[j].slice(0, selected[j].indexOf(','))) * 12 + 1992;
+                if(Number(selected[j].slice(selected[j].indexOf(',') + 1)) > 0)
+                    tempy = 0 - Number(selected[j].slice(selected[j].indexOf(',') + 1));
+                else
+                    tempy = Math.abs(Number(selected[j].slice(selected[j].indexOf(',') + 1)));
+                y_pos = tempy * 12 + 1992;
+                if ( save_x[i] === x_pos && save_y[i] === y_pos) { 
+                    save_x.splice(i, 1); 
+                    save_y.splice(i , 1);
+                    i--; 
+                    temp_flag = temp_flag - 1;
+                }
+            }
+        }
+
+        save_flag = temp_flag;
+
+        listParent.innerHTML = "";
+        drawList();
+        ctx.clearRect(0, 0 , 4000, 4000);
+        init();
+        for(var k = 0 ; k < save_flag ; k ++)
+        {
+            ctx.fillStyle = "red";
+            ctx.fillRect(save_x[k] , save_y[k] , 14 , 14);
+        }
+        console.log("save_flag:" + save_flag + "save_x: " + save_x + "save_y :" + save_y);
+    });
+    // when clear btn click
+    var clearflag = true;
+    Clear.addEventListener("click" , function() {
+        if(clearflag) {
+            listBox.setAttribute("style","display: none;");
+            removebtn.disabled = true;
+            toggle.disabled = true;
+            for(var i = 0 ; i < save_flag ; i ++)
+            {
+                ctx.fillStyle = "red";
+                ctx.fillRect(save_x[i], save_y[i], 14, 14);
+            }
+            clearflag = !clearflag;    
+        }
+        else {
+            listBox.setAttribute("style","display: block;");
+            var optionsHTML = [];
+            clearflag = !clearflag;
+        }
+        drawList();
+    })
+var ClearAll = document.getElementById("ClearAll");
+ClearAll.addEventListener("click" , function() {
+    save_x.length = 0;
+    save_y.length = 0;
+    save_flag = 0;
+    drawList();
+    ctx.clearRect(0, 0, 4000, 4000);
+    init();
+});
+// dynamic option components in list css part
+function drawList() {
+    listParent.innerHTML = "";
+    var tempy = 0;
+    for (var j = 0 ; j < save_flag ; j += 1) {
+        if(save_x[j + 1] == save_x[j] && save_y[j+1] == save_y[j])
+            continue;
+        else {
+            if((Math.floor((save_y[j]-1992)/12)) > 0)
+                tempy = 0 - (Math.floor((save_y[j]-1992)/12));
+            else
+                tempy = Math.abs((Math.floor((save_y[j]-1992)/12)));
+            // You can customize the font in the list here.
+                listParent.innerHTML += "<option style=\"font-size: 16px; color: gray; text-shadow:3px 3px 3px #aaaaaa; padding-left: 20px;+\" id="+j+">"+ (Math.floor((save_x[j]-1992)/12)) +" , "+tempy+"</option>";
+        }
+    }
+} 
+
+
+var zoom = 1;
+var zoomStep = 0.3;
+
+document.getElementById("zoomIn").addEventListener("click", function() {
+    if(zoom > 5)
+    {
+        return;
+    }
+  zoom += zoomStep;
+  document.getElementById("can").style.transform = "scale(" + zoom + ")";
+  StopFlag();
+  // document.getElementById("can").style.transform = "translate( 0 )";
+});
+
+function StopFlag() {
+
+var stopflag = Number(can.style.top.slice(0 , can.style.top.indexOf("px")));
+    var stopflag1 = Number(can.style.left.slice(0 , can.style.left.indexOf("px")));
+    console.log(temptop + "<= temptop : "+ "templeft =>" + templeft + "zoom" + zoom);
+
+    if(zoom == 1 && stopflag > 0 || zoom == 1 && stopflag1 > 0)
+    {
+        can.style.top = 10;
+        can.style.left = 10;
+    }
+    if(zoom == 1 && stopflag < -109)
+    {
+        can.style.top = -100;
+    }
+    if(zoom == 1 && stopflag1 < -36)
+    {
+        can.style.left = -30;
+    }
+    if(zoom == 1.3 && stopflag < -285)
+    {
+        can.style.top = -285;
+    }
+    if(zoom == 1.3 && stopflag1 < -35)
+    {
+        can.style.left = -30;
+    }
+
+    if(zoom == 1.6 && stopflag < -498)
+    {
+        can.style.top = -498;
+    }
+    if(zoom == 1.6 && stopflag1 < -346)
+    {
+        can.style.left = -340;
+    }
+
+    if(zoom < 2 && zoom > 1.9 && stopflag < -662)
+    {
+        can.style.top = -662;
+    }
+    if(zoom < 2 && zoom > 1.9 && stopflag1 < -478)
+    {
+        can.style.left = -470;
+    }
+
+    if(zoom == 2.2 && stopflag < -805)
+    {
+        can.style.top = -805;
+    }
+    if(zoom == 2.2 && stopflag1 < -511)
+    {
+        can.style.left = -511;
+    }
+
+    if(zoom == 2.5 && stopflag < -976)
+    {
+        can.style.top = -976;
+    }
+    if(zoom == 2.5 && stopflag1 < -817)
+    {
+        can.style.left = -817;
+    }
+
+    if(zoom == 1.3 && stopflag > 175 || zoom == 1.3 && stopflag1 > 175)
+    {
+        can.style.top = 170;
+        can.style.left = 170;
+    }
+    if(zoom == 1.6 && stopflag > 316 || zoom == 1.6 && stopflag1 > 316 )
+    {
+        can.style.top = 310;
+        can.style.left = 310;
+    }
+    if(zoom > 1.9 && zoom < 2 &&stopflag > 490 || zoom < 1.9 && zoom < 2 && stopflag1 > 490)
+    {
+        can.style.top = 480;
+        can.style.left = 480;
+    }
+    if(zoom == 2.2 && stopflag > 638 || zoom == 2.2 && stopflag1 > 638 )
+    {
+        can.style.top = 630;
+        can.style.left = 630;
+    }
+    if(zoom == 2.5 && stopflag > 782 || zoom == 2.5 && stopflag1 > 782)
+    {
+        can.style.top = 780;
+        can.style.left = 780;
+    }
+}
+
+document.getElementById("zoomOut").addEventListener("click", function() {
+    if(zoom < 1.3)
+        return;
+  if (zoom > zoomStep) {
+    zoom -= zoomStep;
+    document.getElementById("can").style.transform = "scale(" + zoom + ")";
+  }
+  StopFlag();
+
+});
+
+</script>
+
+
